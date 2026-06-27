@@ -1,0 +1,30 @@
+# ==========================================
+# STM32CubeIDE Build Artifacts (Do Not Track)
+# ==========================================
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.su
+*.d
+
+# ==========================================
+# IDE Layout / Toolchain Specific Files
+# ==========================================
+.settings/
+.metadata/
+RemoteSystemsTempFiles/
+.osx.project
+
+# Tool-generated launch configurations
+*.launch
+
+# ==========================================
+# Operating System Garbage
+# ==========================================
+.DS_Store
+Thumbs.db
