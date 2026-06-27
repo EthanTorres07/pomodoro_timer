@@ -17,7 +17,7 @@
 #include "main.h"
 #include "globals.h"
 
-#define RTC_BUFFER_SIZE 56
+#define RTC_BUFFER_SIZE 7
 
 class RTCDriver
 {
@@ -54,7 +54,7 @@ public:
     RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress, uint32_t year,
             uint32_t month, uint32_t day, uint32_t hour, uint32_t minute,
             uint32_t second);
-    uint32_t getDateAndTime();
+    void getDateAndTime();
     uint32_t getEpochTime();
 
 };

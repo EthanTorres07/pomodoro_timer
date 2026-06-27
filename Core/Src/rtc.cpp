@@ -17,3 +17,17 @@ RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress, uint32_t
         m_minute(minute), m_second(second), m_remainingTime(0)
 {
 }
+
+/**
+ * @brief Sends an I2C request to fill the TimeStamp field
+ */
+RTCDriver::getDateAndTime()
+{
+    HAL_I2C_Mem_Read_DMA(
+            i2cHandle,
+            mainAddress,
+            REG_Seconds,
+            1,
+            &TimeStamp,
+            RTC_BUFFER_SIZE);
+}
