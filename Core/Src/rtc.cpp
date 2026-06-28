@@ -10,8 +10,12 @@
 
 #include "rtc.hpp"
 
-RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress, uint32_t year,
-        uint32_t month, uint32_t day, uint32_t hour, uint32_t minute,
+RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress,
+        uint32_t year,
+        uint32_t month,
+        uint32_t day,
+        uint32_t hour,
+        uint32_t minute,
         uint32_t second) : m_i2cHandle(i2cHandle), m_i2cAddress(mainAddress),
         m_year(year), m_month(month), m_day(day), m_hour(hour),
         m_minute(minute), m_second(second), m_remainingTime(0)
@@ -27,7 +31,10 @@ RTCDriver::getDateAndTime()
             i2cHandle,
             mainAddress,
             REG_Seconds,
-            1,
-            &TimeStamp,
-            RTC_BUFFER_SIZE);
+            I2C_MEMADD_SIZE_8BIT,
+            (uint8_t*) &m_timeBuffer,
+            sizeof(m_timeBuffer));
+
+    // Extract necessary values from transmitted data
+    m_timeBuffer.second <<=
 }

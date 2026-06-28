@@ -31,9 +31,12 @@ private:
         uint8_t minute;
         uint8_t hour;
         uint8_t day;
+        uint8_t date
         uint8_t month;
         uint16_t year;
      } TimeStamp;
+
+    TimeStamp m_timeBuffer;
     uint32_t m_remainingTime;
 
     enum Register : uint8_t
@@ -45,17 +48,13 @@ private:
         REG_DATE    = 0x04,
         REG_MONTH   = 0x05,
         REG_YEAR    = 0x06
-
     };
-
-    void updateDateAndTime();
 
 public:
     RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress, uint32_t year,
             uint32_t month, uint32_t day, uint32_t hour, uint32_t minute,
             uint32_t second);
-    void getDateAndTime();
-    uint32_t getEpochTime();
+    TimeStamp getDateAndTime();
 
 };
 
