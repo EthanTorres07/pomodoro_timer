@@ -10,8 +10,9 @@
 
 #include "main.h"
 #include "rotary_encoder.hpp"
+#include "rtc.hpp"
 
-uint32_t epochTime;
+uint32_t _epochTime;
 
 void run()
 {
@@ -50,7 +51,7 @@ void syncEpochTime(TimeStamp currTime)
     int32_t days_since_epoch = totalDays - 719468;
 
     // Convert days to seconds and add the current day's time
-    epochTime = (days_since_epoch * 86400UL) +
+    _epochTime = (days_since_epoch * 86400UL) +
                               (hour * 3600UL) +
                               (minute * 60UL) +
                               second;

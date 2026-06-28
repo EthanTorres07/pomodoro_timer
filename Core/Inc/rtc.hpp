@@ -19,13 +19,7 @@
 
 #define RTC_BUFFER_SIZE 7
 
-class RTCDriver
-{
-private:
-    I2C_HandleTypeDef* m_i2cHandle;
-    uint8_t m_i2cAddress;
-
-    struct
+    typedef struct
     {
         uint8_t second;
         uint8_t minute;
@@ -35,6 +29,13 @@ private:
         uint8_t month;
         uint16_t year;
      } TimeStamp;
+
+
+class RTCDriver
+{
+private:
+    I2C_HandleTypeDef* m_i2cHandle;
+    uint8_t m_i2cAddress;
 
     TimeStamp m_timeBuffer;
     uint32_t m_remainingTime;
@@ -51,9 +52,8 @@ private:
     };
 
 public:
-    RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress, uint32_t year,
-            uint32_t month, uint32_t day, uint32_t hour, uint32_t minute,
-            uint32_t second);
+
+    RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress);
     TimeStamp getDateAndTime();
 
 };

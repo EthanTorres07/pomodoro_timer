@@ -7,6 +7,8 @@
 #ifndef APP_H
 #define APP_H
 
+#include "rtc.hpp"
+
 void run();
 
 void syncEpochTime(TimeStamp currTime);

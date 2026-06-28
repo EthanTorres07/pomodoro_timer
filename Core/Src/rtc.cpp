@@ -10,37 +10,30 @@
 
 #include "rtc.hpp"
 
-RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress,
-        uint32_t year,
-        uint32_t month,
-        uint32_t day,
-        uint32_t hour,
-        uint32_t minute,
-        uint32_t second) : m_i2cHandle(i2cHandle), m_i2cAddress(mainAddress),
-        m_year(year), m_month(month), m_day(day), m_hour(hour),
-        m_minute(minute), m_second(second), m_remainingTime(0)
+RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress)
+: m_i2cHandle(i2cHandle), m_i2cAddress(mainAddress)
 {
 }
 
 /**
  * @brief Sends an I2C request to fill the TimeStamp field
  */
-RTCDriver::getDateAndTime()
+TimeStamp RTCDriver::getDateAndTime()
 {
     HAL_I2C_Mem_Read_DMA(
-            i2cHandle,
-            mainAddress,
-            REG_Seconds,
+            m_i2cHandle,
+            m_i2cAddress,
+            REG_SECONDS,
             I2C_MEMADD_SIZE_8BIT,
             (uint8_t*) &m_timeBuffer,
             sizeof(m_timeBuffer));
 
     // Extract necessary values from transmitted data
     uint8_t mask = 0xF;
-    m_timeBuffer.second & mask;
-    m_timeBuffer.minute & mask;
-    m_timeBuffer.hour & mask;
-    m_timeBuffer.date & mask;
-    m_timeBuffer.month & mask;
-    m_timeBuffer.year & mask;
+    m_timeBuffer.second &= mask;
+    m_timeBuffer.minute &= mask;
+    m_timeBuffer.hour &= mask;
+    m_timeBuffer.date &= mask;
+    m_timeBuffer.month &= mask;
+    m_timeBuffer.year &= mask;
 }
