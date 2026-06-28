@@ -36,5 +36,11 @@ RTCDriver::getDateAndTime()
             sizeof(m_timeBuffer));
 
     // Extract necessary values from transmitted data
-    m_timeBuffer.second <<=
+    uint8_t mask = 0xF;
+    m_timeBuffer.second & mask;
+    m_timeBuffer.minute & mask;
+    m_timeBuffer.hour & mask;
+    m_timeBuffer.date & mask;
+    m_timeBuffer.month & mask;
+    m_timeBuffer.year & mask;
 }
