@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "globals.h"
+#include "app.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -234,10 +235,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         }
     }
 
-    // Sets flag to check the RTC
+    // Increase epoch time
     else if (GPIO_Pin == RTC_IN_Pin)
     {
-        g_checkTimer = true;
+        _epochTime++;
     }
 
 }

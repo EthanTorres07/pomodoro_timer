@@ -12,7 +12,10 @@
 #include "rotary_encoder.hpp"
 #include "rtc.hpp"
 
-uint32_t _epochTime;
+extern "C"
+{
+    volatile uint32_t _epochTime = 0;
+}
 
 void run()
 {
