@@ -31,6 +31,8 @@
      } TimeStamp;
 
 
+
+#ifdef __cplusplus
 class RTCDriver
 {
 private:
@@ -57,6 +59,7 @@ public:
     TimeStamp getDateAndTime();
 
 };
+#endif
 
 #pragma pack(pop)
 #endif /* INC_RTC_HPP_ */

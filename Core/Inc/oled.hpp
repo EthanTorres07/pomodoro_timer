@@ -1,6 +1,6 @@
 /**
  * @file    oled.hpp
- * @brief   API for a TBD OLED Display
+ * @brief   API for a SSD1306 OLED display
  * @details Used to send data to be displayed
  *
  */
@@ -21,7 +21,7 @@ private:
 public:
     Oled(SPI_HandleTypeDef *hspi);
     void init();
-    void updateDisplay(buffer);
+    void updateDisplay();
 
 };
 
