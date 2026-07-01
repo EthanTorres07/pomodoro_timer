@@ -10,7 +10,7 @@
 
 #include "main.h"
 
-class OLED
+class Oled
 {
 private:
     SPI_HandleTypeDef *m_hspi;
@@ -19,8 +19,9 @@ private:
     const uint16_t     m_bufferSize;
 
 public:
-    OLED(SPI_HandleTypeDef *hspi);
-    void updateDisplay(char *buffer);
+    Oled(SPI_HandleTypeDef *hspi);
+    void init();
+    void updateDisplay(buffer);
 
 };
 
