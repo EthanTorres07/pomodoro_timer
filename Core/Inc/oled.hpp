@@ -17,6 +17,9 @@ private:
     const uint8_t      m_width;
     const uint8_t      m_height;
     const uint16_t     m_bufferSize;
+    const uint8_t buffer[m_bufferSize];
+
+    void drawPixel();
 
 public:
     Oled(SPI_HandleTypeDef *hspi);

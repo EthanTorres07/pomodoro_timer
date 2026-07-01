@@ -52,3 +52,8 @@ void Oled::init()
 
     HAL_SPI_Transmit_DMA(m_hspi, initCommands, sizeof(initCommands));
 }
+
+void Oled::drawPixel()
+{
+
+}
