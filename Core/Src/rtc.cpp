@@ -16,7 +16,8 @@ RTCDriver::RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t mainAddress)
 }
 
 /**
- * @brief Sends an I2C request to fill the TimeStamp field
+ * @brief Sends an I2C request to fill the TimeStamp field and returns the field
+ * @retval the buffer containing the current time stamp
  */
 TimeStamp RTCDriver::getDateAndTime()
 {
@@ -36,4 +37,6 @@ TimeStamp RTCDriver::getDateAndTime()
     m_timeBuffer.date &= mask;
     m_timeBuffer.month &= mask;
     m_timeBuffer.year &= mask;
+
+    return m_TimeStamp;
 }
