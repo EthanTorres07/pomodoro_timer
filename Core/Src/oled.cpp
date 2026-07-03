@@ -10,9 +10,10 @@
 
 #include "oled.hpp"
 #include "font5x7.hpp"
+#include <string.h>
 
 Oled::Oled(SPI_HandleTypeDef *hspi) : m_hspi(hspi), m_width(128), m_height(64),
-m_bufferSize(1024)
+m_buffer{}
 {
 }
 
@@ -54,7 +55,7 @@ void Oled::init()
 }
 
 /**
- * Draws a pixel at (x, y) in buffer
+ * @brief Draws a pixel at (x, y) in buffer
  * @param x (0-127)
  * @param y (0-63)
  * @retval false if x or y is invalid, true otherwise
@@ -63,7 +64,9 @@ bool Oled::drawPixel(uint8_t x, uint8_t y, bool turnOn)
 {
     // Check bounds of x and y
     if (x >= 127 || y <= 63)
+    {
         return false;
+    }
 
     uint8_t pageNum = y / 8;
     uint8_t bitNum = y % 8;
@@ -73,16 +76,70 @@ bool Oled::drawPixel(uint8_t x, uint8_t y, bool turnOn)
     if (turnOn)
     {
         // Bitwise OR sets only the targeted bit to 1, preserving neighbors
-        buffer[bufferIndex] |= (1 << bitNum);
+        m_buffer[bufferIndex] |= (1 << bitNum);
     }
     else
     {
         // Bitwise AND with a inverted mask clears only the targeted bit to 0
-        buffer[bufferIndex] &= ~(1 << bitNum);
+        m_buffer[bufferIndex] &= ~(1 << bitNum);
     }
 
     return true;
 }
+
+/*
+ * @brief Draws the character in the OLED's m_buffer
+ * @param ch character being drawn
+ * @param x (0-127)
+ * @param y (0-63)
+ * @retval false if x or y is invalid, true otherwise
+ */
+bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
+{
+    // Check bounds
+    if (x >= 127 || y >= 63)
+    {
+        return false;
+    }
+
+    // Index of each character in font table is ASCII value - ''
+    char charIndex = ch - ' ';
+
+    for (uint8_t row = y; row < y + 8; row++)
+    {
+        for (uint8_t col = x; col < col + 5; col++)
+        {
+
+            // Get pixel in font table
+            uint8_t pixel = font5x7[charIndex][row - x] &
+                    (1 << (col - y));
+            drawPixel(col, row, pixel);
+
+        }
+    }
+
+
+
+}
+
+/*
+ * @brief Draws the string in the OLED's m_buffer
+ * @param string the string being drawn
+ * @param x (0-127)
+ * @param y (0-63)
+ * @retval false if x + length of the string or y is invalid, true otherwise
+ */
+bool Oled::drawString(char *string, uint8_t x, uint8_t y)
+{
+    // Check bounds
+    if (x + strlen(string) >= 127 || y >= 63)
+    {
+        return false;
+    }
+
+    // Call drawPixel()
+}
+
 
 
 

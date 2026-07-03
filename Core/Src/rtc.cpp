@@ -38,5 +38,5 @@ TimeStamp RTCDriver::getDateAndTime()
     m_timeBuffer.month &= mask;
     m_timeBuffer.year &= mask;
 
-    return m_TimeStamp;
+    return m_timeBuffer;
 }

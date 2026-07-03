@@ -16,15 +16,15 @@ private:
     SPI_HandleTypeDef *m_hspi;
     const uint8_t      m_width;
     const uint8_t      m_height;
-    const uint16_t     m_bufferSize;
-    const uint8_t buffer[m_bufferSize];
+    uint8_t m_buffer[1024];
 
-    void drawPixel();
+    bool drawPixel(uint8_t x, uint8_t y, bool turnOn);
+    bool drawChar(char ch, uint8_t x, uint8_t y);
 
 public:
     Oled(SPI_HandleTypeDef *hspi);
     void init();
-    void updateDisplay(uint8_t x, uint8_t y, bool turnOn);
+    bool drawString(char *string, uint8_t x, uint8_t y);
 
 };
 
