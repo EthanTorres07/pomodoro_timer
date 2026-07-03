@@ -24,7 +24,7 @@ private:
 public:
     Oled(SPI_HandleTypeDef *hspi);
     void init();
-    void updateDisplay();
+    void updateDisplay(uint8_t x, uint8_t y, bool turnOn);
 
 };
 

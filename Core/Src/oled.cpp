@@ -53,7 +53,46 @@ void Oled::init()
     HAL_SPI_Transmit_DMA(m_hspi, initCommands, sizeof(initCommands));
 }
 
-void Oled::drawPixel()
+/**
+ * Draws a pixel at (x, y) in buffer
+ * @param x (0-127)
+ * @param y (0-63)
+ * @retval false if x or y is invalid, true otherwise
+ */
+bool Oled::drawPixel(uint8_t x, uint8_t y, bool turnOn)
 {
+    // Check bounds of x and y
+    if (x >= 127 || y <= 63)
+        return false;
 
+    uint8_t pageNum = y / 8;
+    uint8_t bitNum = y % 8;
+    uint16_t bufferIndex = (pageNum * 128) + x;
+
+    // Change the pixel at (x, y) n buffer on or off
+    if (turnOn)
+    {
+        // Bitwise OR sets only the targeted bit to 1, preserving neighbors
+        buffer[bufferIndex] |= (1 << bitNum);
+    }
+    else
+    {
+        // Bitwise AND with a inverted mask clears only the targeted bit to 0
+        buffer[bufferIndex] &= ~(1 << bitNum);
+    }
+
+    return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
