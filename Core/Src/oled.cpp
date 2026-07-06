@@ -139,7 +139,15 @@ bool Oled::drawString(char *string, uint8_t x, uint8_t y)
         return false;
     }
 
-    // Call drawPixel()
+    while (string)
+    {
+        drawChar(*string, x, y);
+
+        string++;
+        x += 10;
+    }
+
+    return true;
 }
 
 
