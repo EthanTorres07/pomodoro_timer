@@ -97,7 +97,7 @@ bool Oled::drawPixel(uint8_t x, uint8_t y, bool turnOn)
 bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
 {
     // Check bounds
-    if (x >= 127 || y >= 63)
+    if (x > 127 || y > 63)
     {
         return false;
     }
@@ -105,15 +105,16 @@ bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
     // Index of each character in font table is ASCII value - ''
     char charIndex = ch - ' ';
 
-    for (uint8_t row = y; row < y + 8; row++)
+    for (uint8_t colOffset = 0; colOffset < 5; colOffset++)
     {
-        for (uint8_t col = x; col < col + 5; col++)
+
+        uint8_t columnByte = font5x7[charIndex][colOffset];
+        for (uint8_t bitOffset = 0; bitOffset < 8; bitOffset++)
         {
 
             // Get pixel in font table
-            uint8_t pixel = font5x7[charIndex][row - x] &
-                    (1 << (col - y));
-            drawPixel(col, row, pixel);
+            bool pixelOn = (columnByte >> bitOffset) & 0x01;
+            drawPixel(col + colOffset, row + rowOffset, pixelOn);
 
         }
     }
@@ -133,18 +134,20 @@ bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
  */
 bool Oled::drawString(char *string, uint8_t x, uint8_t y)
 {
+
+    uint16_t stringPixelWidth = strlen(string) * 10;
     // Check bounds
-    if (x + strlen(string) >= 127 || y >= 63)
+    if ((x + stringPixelWidth) >= 127 || y >= 63)
     {
         return false;
     }
 
-    while (string)
+    while (*string != '\0')
     {
         drawChar(*string, x, y);
 
         string++;
-        x += 10;
+        x += 6;
     }
 
     return true;
