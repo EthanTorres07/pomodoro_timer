@@ -53,6 +53,8 @@ private:
         REG_YEAR    = 0x06
     };
 
+    void init();
+
 public:
 
     RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress);

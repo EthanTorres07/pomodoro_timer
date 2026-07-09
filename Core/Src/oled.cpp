@@ -114,7 +114,8 @@ bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
 
             // Get pixel in font table
             bool pixelOn = (columnByte >> bitOffset) & 0x01;
-            drawPixel(col + colOffset, row + rowOffset, pixelOn);
+
+            drawPixel(x + colOffset, y + bitOffset, pixelOn);
 
         }
     }
