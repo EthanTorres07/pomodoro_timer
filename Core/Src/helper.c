@@ -31,3 +31,9 @@ uint16_t packed_bcd_to_int(uint16_t bcd_val) {
 
     return result;
 }
+
+// Helper to convert standard integer to Binary-Coded Decimal (BCD)
+uint8_t decToBcd(uint8_t val) {
+    return ((val / 10) << 4) | (val % 10);
+}
+

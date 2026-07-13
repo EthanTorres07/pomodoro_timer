@@ -11,15 +11,26 @@
 #include "main.h"
 #include "rotary_encoder.hpp"
 #include "rtc.hpp"
+#include "i2c.h"
+#include "spi.h"
+#include "oled.hpp"
+#include "app.hpp"
 
 extern "C"
 {
     volatile uint32_t _epochTime = 0;
 }
 
+/**
+ * Contains the interrupt-driven main application
+ */
 void run()
 {
     RotaryEncoder encoder(0, 0, 0, 0);
+    RTCDriver rtc(&hi2c1, 0x00); // Edit with actual address ***************
+    Oled oled(&hspi1);
+
+    systemInit(rtc, oled);
 }
 
 /**
@@ -60,3 +71,15 @@ void syncEpochTime(TimeStamp currTime)
                               second;
 
 }
+
+/**
+ * @brief Initializes objects of application
+ * @param rtc     real-time clock of timer
+ * @param oled    main oled display of timer
+ */
+void systemInit(RTCDriver& rtc, Oled& oled)
+{
+    rtc.init();
+    oled.init();
+}
+

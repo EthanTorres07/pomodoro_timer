@@ -27,7 +27,7 @@
         uint8_t day;
         uint8_t date;
         uint8_t month;
-        uint16_t year;
+        uint8_t year;
      } TimeStamp;
 
 
@@ -53,12 +53,12 @@ private:
         REG_YEAR    = 0x06
     };
 
-    void init();
-
 public:
 
     RTCDriver(I2C_HandleTypeDef* i2cHandle, uint8_t i2cAddress);
     TimeStamp getDateAndTime();
+    void init();
+
 
 };
 #endif

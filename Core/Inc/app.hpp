@@ -15,12 +15,18 @@ extern "C" {
 
 extern volatile uint32_t _epochTime;
 
+void run();
+
 #ifdef __cplusplus
 }
 #endif
 
-void run();
+#ifdef __cplusplus
 
 void syncEpochTime(TimeStamp currTime);
 
-#endif
+void systemInit(RTCDriver& rtc, Oled& oled);
+
+#endif /* __cplusplus */\
+
+#endif /* APP_H */
