@@ -20,7 +20,7 @@ enum UserEvent
     BUTTON_PRESS,
     ENCODER_DOWN,
     ENCODER_UP,
-    NO_INPUT
+    NO_EVENT
 };
 
 void run();

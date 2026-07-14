@@ -90,4 +90,27 @@ void systemInit(RTCDriver& rtc, Oled& oled)
 static UserEvent taskCheckInputs()
 {
 
+    if (g_buttonPressed)
+    {
+        g_buttonPressed = false;
+        return BUTTON_PRESS;
+    }
+
+    // Reset and read encoder
+    // Implemented this way due to ISR structure (see stm32f4xx_it.c)
+    __disable_irq();
+    uint8_t delta = g_counter;
+    g_counter = 0;
+    __enable_irq();
+
+    if (delta > 0)
+    {
+        return ENCODER_UP;
+    }
+    else if (delta < 0)
+    {
+        return ENCODER_DOWN;
+    }
+
+    return NO_EVENT;
 }
