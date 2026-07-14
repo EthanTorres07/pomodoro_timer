@@ -83,3 +83,11 @@ void systemInit(RTCDriver& rtc, Oled& oled)
     oled.init();
 }
 
+/**
+ * @brief Checks system inputs
+ * @retval The input that was provided
+ */
+static UserEvent taskCheckInputs()
+{
+
+}

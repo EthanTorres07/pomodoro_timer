@@ -15,6 +15,14 @@ extern "C" {
 
 extern volatile uint32_t _epochTime;
 
+enum UserEvent
+{
+    BUTTON_PRESS,
+    ENCODER_DOWN,
+    ENCODER_UP,
+    NO_INPUT
+};
+
 void run();
 
 #ifdef __cplusplus
@@ -26,6 +34,8 @@ void run();
 void syncEpochTime(TimeStamp currTime);
 
 void systemInit(RTCDriver& rtc, Oled& oled);
+
+static UserEvent taskCheckInputs();
 
 #endif /* __cplusplus */\
 
