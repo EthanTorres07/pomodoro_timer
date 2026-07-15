@@ -15,6 +15,8 @@ extern "C" {
 
 extern volatile uint32_t _epochTime;
 
+
+
 enum UserEvent
 {
     BUTTON_PRESS,
@@ -23,6 +25,13 @@ enum UserEvent
     NO_EVENT
 };
 
+enum State
+{
+    STARTUP,
+    SETUP,
+    TIMER_ACTIVE,
+    TIMER_FINISHED
+};
 void run();
 
 #ifdef __cplusplus
@@ -36,6 +45,10 @@ void syncEpochTime(TimeStamp currTime);
 void systemInit(RTCDriver& rtc, Oled& oled);
 
 static UserEvent taskCheckInputs();
+
+static void changeState(UserEvent event);
+
+static void startTimer();
 
 #endif /* __cplusplus */\
 

@@ -21,11 +21,18 @@ extern "C"
     volatile uint32_t _epochTime = 0;
 }
 
+static uint32_t timerValue = 0;
+
+static State systemState = STARTUP;
+
+
 /**
  * Contains the interrupt-driven main application
  */
 void run()
 {
+    systemState = STARTUP;
+
     RotaryEncoder encoder(0, 0, 0, 0);
     RTCDriver rtc(&hi2c1, 0x00); // Edit with actual address ***************
     Oled oled(&hspi1);
@@ -113,4 +120,66 @@ static UserEvent taskCheckInputs()
     }
 
     return NO_EVENT;
+}
+
+/**
+ * @brief Changes system state based on inputs/system variables
+ * @param event the user input last done on the system
+ */
+static void changeState(UserEvent event)
+{
+    switch (systemState)
+    {
+    case STARTUP:
+        // Inputs do nothing during startup
+        break;
+
+    case SETUP:
+        if (event == BUTTON_PRESS)
+        {
+            // Start timer
+            startTimer();
+            systemState = TIMER_ACTIVE;
+        }
+        else if (event == ENCODER_DOWN)
+        {
+            // Decrease timer by 30 seconds
+            if (timerValue > 0)
+            {
+                timerValue -= 30;
+            }
+        }
+        else if (event == ENCODER_UP)
+        {
+
+            // Increase timer by 30 seconds
+            timerValue += 30;
+        }
+        break;
+
+    case TIMER_ACTIVE:
+        if (event == BUTTON_PRESS)
+        {
+            // Stop timer
+            timerValue = 0;
+            systemState = TIMER_FINSHED;
+        }
+        break;
+
+    case TIMER_FINISHED:
+        if (event == BUTTON_PRESS)
+        {
+            // Go back to setup
+            systemState = SETUP;
+        }
+    }
+}
+
+/**
+ * @brief Starts the timer by adding timer value to current epoch time to be
+ * compared to upon interrupt
+ */
+static void startTimer()
+{
+
 }
