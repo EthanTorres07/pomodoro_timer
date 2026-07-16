@@ -50,6 +50,8 @@ static void changeState(UserEvent event);
 
 static void startTimer();
 
+static void taskUpdateTime();
+
 #endif /* __cplusplus */\
 
 #endif /* APP_H */

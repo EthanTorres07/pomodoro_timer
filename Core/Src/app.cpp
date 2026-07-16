@@ -169,9 +169,30 @@ static void changeState(UserEvent event)
     case TIMER_FINISHED:
         if (event == BUTTON_PRESS)
         {
+            // Add vibration and ringer
+
             // Go back to setup
             systemState = SETUP;
+            timerValue = 0;
         }
+    }
+}
+
+/**
+ * @brief Checks if timer is finished and syncs _epochTime with RTC
+ */
+static void taskUpdateTime(RTCDriver rtc)
+{
+    if (systemState == TIMER_ACTIVE && timerValue - _epochTime == 0)
+    {
+        systemState = TIMER_FINISHED;
+    }
+
+    // If its been an hour and there is no active timer sync the onboard time
+    // with RTC
+    if (systemState == SETUP && (lastSyncTime - HAL_GetTick() > (3600 * 1000)))
+    {
+        syncEpochTime(rtc.getDateAndTime());
     }
 }
 
@@ -181,5 +202,5 @@ static void changeState(UserEvent event)
  */
 static void startTimer()
 {
-
+    timerValue += _epochTime;
 }
