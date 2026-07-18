@@ -24,7 +24,7 @@ private:
 public:
     Oled(SPI_HandleTypeDef *hspi);
     void init();
-    bool drawString(char *string, uint8_t x, uint8_t y);
+    bool drawString(const char *string, uint8_t x, uint8_t y);
 
 };
 

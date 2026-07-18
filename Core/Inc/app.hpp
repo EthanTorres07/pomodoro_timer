@@ -50,7 +50,11 @@ static void changeState(UserEvent event);
 
 static void startTimer();
 
-static void taskUpdateTime();
+static void taskUpdateTime(RTCDriver& rtc);
+
+static void taskUpdateDisplay(Oled& oled);
+
+static char *getDateAndTimeString();
 
 #endif /* __cplusplus */\
 

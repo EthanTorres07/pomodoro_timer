@@ -15,6 +15,8 @@
 #include "spi.h"
 #include "oled.hpp"
 #include "app.hpp"
+#include "font5x7.hpp"
+#include <string.h>
 
 extern "C"
 {
@@ -24,6 +26,8 @@ extern "C"
 static uint32_t timerValue = 0;
 
 static State systemState = STARTUP;
+
+static uint32_t lastSyncTime;
 
 
 /**
@@ -77,6 +81,7 @@ void syncEpochTime(TimeStamp currTime)
                               (minute * 60UL) +
                               second;
 
+    lastSyncTime = HAL_GetTick();
 }
 
 /**
@@ -162,7 +167,7 @@ static void changeState(UserEvent event)
         {
             // Stop timer
             timerValue = 0;
-            systemState = TIMER_FINSHED;
+            systemState = TIMER_FINISHED;
         }
         break;
 
@@ -180,8 +185,9 @@ static void changeState(UserEvent event)
 
 /**
  * @brief Checks if timer is finished and syncs _epochTime with RTC
+ * @param rtc RTC being interacted with
  */
-static void taskUpdateTime(RTCDriver rtc)
+static void taskUpdateTime(RTCDriver& rtc)
 {
     if (systemState == TIMER_ACTIVE && timerValue - _epochTime == 0)
     {
@@ -189,7 +195,7 @@ static void taskUpdateTime(RTCDriver rtc)
     }
 
     // If its been an hour and there is no active timer sync the onboard time
-    // with RTC
+    // with RTC (1 hour sync time is based on specs of RTC)
     if (systemState == SETUP && (lastSyncTime - HAL_GetTick() > (3600 * 1000)))
     {
         syncEpochTime(rtc.getDateAndTime());
@@ -203,4 +209,37 @@ static void taskUpdateTime(RTCDriver rtc)
 static void startTimer()
 {
     timerValue += _epochTime;
+}
+
+/**
+ * @brief Updates display based on state
+ * @param oled OLED being updated
+ */
+static void taskUpdateDisplay(Oled& oled)
+{
+    switch (systemState)
+    {
+    case STARTUP:
+    {
+        const char *startupString = "Initializing...";
+
+        // Offset coordinates because drawString() draws coordinates are from
+        // beginning of string
+        uint8_t centerX = (128 - (FONT_WIDTH * strlen(startupString))) / 2;
+        uint8_t centerY = (64 - FONT_HEIGHT) / 2;
+        oled.drawString(startupString, centerX, centerY);
+        break;
+    }
+    case SETUP:
+        break;
+    }
+}
+
+/**
+ * @brief Returns a string of the current date and time based on _epochTime
+ * @retval date and time in the form of MM/DD/YY HH:SS
+ */
+static char *getDateAndTimeString()
+{
+
 }

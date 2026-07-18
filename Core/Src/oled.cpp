@@ -133,7 +133,7 @@ bool Oled::drawChar(char ch, uint8_t x, uint8_t y)
  * @param y (0-63)
  * @retval false if x + length of the string or y is invalid, true otherwise
  */
-bool Oled::drawString(char *string, uint8_t x, uint8_t y)
+bool Oled::drawString(const char *string, uint8_t x, uint8_t y)
 {
 
     uint16_t stringPixelWidth = strlen(string) * 10;

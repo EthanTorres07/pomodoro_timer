@@ -105,4 +105,7 @@ const uint8_t font5x7[95][5] = {
     {0x02, 0x01, 0x02, 0x04, 0x02}  // 126: ~
 };
 
+#define FONT_HEIGHT 8
+#define FONT_WIDTH 5
+
 #endif /* INC_FONT5X7_HPP_ */
