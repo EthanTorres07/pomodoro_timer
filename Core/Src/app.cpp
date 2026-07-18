@@ -237,32 +237,57 @@ static void taskUpdateDisplay(Oled& oled)
         break;
     }
     case SETUP:
+    {
         // Date and time centered in upper third
-        const char *dateAndTime = getDateAndTimeString();
+        char dateAndTime[25];
+        getDateAndTimeString(dateAndTime);
         x = (128 - (FONT_WIDTH * strlen(dateAndTime))) / 2;
         y = (64 - FONT_HEIGHT) / 3;
+
+        // Timer in dead center
+        char timerString[9];
+        getTimerString();
+
+        x = (128 - (FONT_WIDTH * strlen(timerString))) / 2;
+        y = (64 - FONT_HEIGHT) / 2;
+        oled.drawString(startupString, x, y);
         break;
+    }
     }
 }
 
 /**
  * @brief Returns a string of the current date and time based on _epochTime
  * using ctime function acstime
+ * @param dateAndTime buffer to put time in
  * @retval date and time in the form of Www Mmm dd hh:mm:ss yyyy\n
  */
-static char *getDateAndTimeString()
+static void getDateAndTimeString(char *dateAndTime)
 {
     // Convert epoch to a structural representation of local time
     struct tm *timeinfo = localtime((const time_t*) _epochTime);
 
-    // Access individual components
-    int year = timeinfo->tm_year + 1900; // tm_year is years since 1900
-    int month = timeinfo->tm_mon + 1;    // tm_mon is 0-11
-    int day = timeinfo->tm_mday;
-    int hour = timeinfo->tm_hour;
-    int min = timeinfo->tm_min;
-    int sec = timeinfo->tm_sec;
+    *dateAndTime = asctime(timeinfo);
 
-    return asctime(timeinfo);
+}
 
+/**
+ * @brief returns string containing live timer value
+ * @param timerString timer string buffer
+ * @retval the formatted timer string in HH:MM:SS format
+ */
+static void getTimerString(char *timerString)
+{
+    // 1. Calculate time components
+    uint32_t hours   = totalSeconds / 3600;
+    uint32_t minutes = (totalSeconds % 3600) / 60;
+    uint32_t seconds = totalSeconds % 60;
+
+    // 2. Format into an HH:MM:SS string
+
+    // "%02u" forces 2 digits with leading zeros if needed
+    snprintf(*timerString, sizeof(*timerString), "%02u:%02u:%02u", hours, minutes,
+            seconds);
+
+    return timerString;
 }
