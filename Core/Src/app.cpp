@@ -234,12 +234,3 @@ static void taskUpdateDisplay(Oled& oled)
         break;
     }
 }
-
-/**
- * @brief Returns a string of the current date and time based on _epochTime
- * @retval date and time in the form of MM/DD/YY HH:SS
- */
-static char *getDateAndTimeString()
-{
-
-}
