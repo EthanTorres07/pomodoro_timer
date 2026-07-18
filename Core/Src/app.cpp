@@ -17,6 +17,7 @@
 #include "app.hpp"
 #include "font5x7.hpp"
 #include <string.h>
+#include <ctime>
 
 extern "C"
 {
@@ -214,23 +215,54 @@ static void startTimer()
 /**
  * @brief Updates display based on state
  * @param oled OLED being updated
+ *
+ * @note Coordinates must be offset because drawString() draws coordinates are
+ * from beginning of string
+ *
  */
 static void taskUpdateDisplay(Oled& oled)
 {
+    uint8_t x;
+    uint8_t y;
     switch (systemState)
     {
     case STARTUP:
     {
+        // Message in dead center
         const char *startupString = "Initializing...";
 
-        // Offset coordinates because drawString() draws coordinates are from
-        // beginning of string
-        uint8_t centerX = (128 - (FONT_WIDTH * strlen(startupString))) / 2;
-        uint8_t centerY = (64 - FONT_HEIGHT) / 2;
-        oled.drawString(startupString, centerX, centerY);
+        x = (128 - (FONT_WIDTH * strlen(startupString))) / 2;
+        y = (64 - FONT_HEIGHT) / 2;
+        oled.drawString(startupString, x, y);
         break;
     }
     case SETUP:
+        // Date and time centered in upper third
+        const char *dateAndTime = getDateAndTimeString();
+        x = (128 - (FONT_WIDTH * strlen(dateAndTime))) / 2;
+        y = (64 - FONT_HEIGHT) / 3;
         break;
     }
+}
+
+/**
+ * @brief Returns a string of the current date and time based on _epochTime
+ * using ctime function acstime
+ * @retval date and time in the form of Www Mmm dd hh:mm:ss yyyy\n
+ */
+static char *getDateAndTimeString()
+{
+    // Convert epoch to a structural representation of local time
+    struct tm *timeinfo = localtime((const time_t*) _epochTime);
+
+    // Access individual components
+    int year = timeinfo->tm_year + 1900; // tm_year is years since 1900
+    int month = timeinfo->tm_mon + 1;    // tm_mon is 0-11
+    int day = timeinfo->tm_mday;
+    int hour = timeinfo->tm_hour;
+    int min = timeinfo->tm_min;
+    int sec = timeinfo->tm_sec;
+
+    return asctime(timeinfo);
+
 }
