@@ -18,6 +18,7 @@
 #include "font5x7.hpp"
 #include <string.h>
 #include <ctime>
+#include <stdio.h>
 
 extern "C"
 {
@@ -236,7 +237,10 @@ static void taskUpdateDisplay(Oled& oled)
         oled.drawString(startupString, x, y);
         break;
     }
+
+    // SETUP and TIMER_ACTIVE do same thing in this function
     case SETUP:
+    case TIMER_ACTIVE:
     {
         // Date and time centered in upper third
         char dateAndTime[25];
@@ -246,11 +250,49 @@ static void taskUpdateDisplay(Oled& oled)
 
         // Timer in dead center
         char timerString[9];
-        getTimerString();
+        getTimerString(timerString);
 
         x = (128 - (FONT_WIDTH * strlen(timerString))) / 2;
         y = (64 - FONT_HEIGHT) / 2;
-        oled.drawString(startupString, x, y);
+        oled.drawString(timerString, x, y);
+        break;
+    }
+
+    case TIMER_FINISHED:
+    {
+        // Date and time centered in upper third
+        char dateAndTime[25];
+        getDateAndTimeString(dateAndTime);
+        x = (128 - (FONT_WIDTH * strlen(dateAndTime))) / 2;
+        y = (64 - FONT_HEIGHT) / 3;
+
+        // Message in dead center (blinking)
+        char message[] = "TIMER FINISHED";
+        bool isVisible = true;
+        x = (128 - (FONT_WIDTH * strlen(message))) / 2;
+        y = (64 - FONT_HEIGHT) / 2;
+
+
+        uint32_t currTime = HAL_GetTick();
+        static uint32_t lastUpdate = currTime;
+
+        if (currTime - lastUpdate >= 1000)
+        {
+            isVisible = !isVisible;
+        }
+        if (isVisible)
+        {
+            oled.drawString(message, x, y);
+
+        }
+        else
+        {
+            // Clear by drawing a string the same length as message
+            oled.drawString("              ", x, y);
+        }
+
+        lastUpdate = currTime;
+
         break;
     }
     }
@@ -267,7 +309,7 @@ static void getDateAndTimeString(char *dateAndTime)
     // Convert epoch to a structural representation of local time
     struct tm *timeinfo = localtime((const time_t*) _epochTime);
 
-    *dateAndTime = asctime(timeinfo);
+    dateAndTime = asctime(timeinfo);
 
 }
 
@@ -279,15 +321,14 @@ static void getDateAndTimeString(char *dateAndTime)
 static void getTimerString(char *timerString)
 {
     // 1. Calculate time components
-    uint32_t hours   = totalSeconds / 3600;
-    uint32_t minutes = (totalSeconds % 3600) / 60;
-    uint32_t seconds = totalSeconds % 60;
+    uint32_t hours   = timerValue / 3600;
+    uint32_t minutes = (timerValue % 3600) / 60;
+    uint32_t seconds = timerValue % 60;
 
     // 2. Format into an HH:MM:SS string
 
     // "%02u" forces 2 digits with leading zeros if needed
-    snprintf(*timerString, sizeof(*timerString), "%02u:%02u:%02u", hours, minutes,
+    snprintf(timerString, sizeof(*timerString), "%02u:%02u:%02u", hours, minutes,
             seconds);
 
-    return timerString;
 }

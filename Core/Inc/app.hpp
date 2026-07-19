@@ -54,7 +54,9 @@ static void taskUpdateTime(RTCDriver& rtc);
 
 static void taskUpdateDisplay(Oled& oled);
 
-static char *getDateAndTimeString();
+static void getDateAndTimeString(const char *dateAndTime);
+
+static void getTimerString(char *timerString);
 
 #endif /* __cplusplus */\
 
