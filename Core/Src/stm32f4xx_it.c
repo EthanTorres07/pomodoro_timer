@@ -242,7 +242,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
     else if (GPIO_Pin == ENC_SW_Pin)
     {
-        g_buttonPressed = true;
+        buttonPressed = true;
     }
 
 }

@@ -15,6 +15,11 @@ extern "C" {
 
 extern volatile uint32_t _epochTime;
 
+extern volatile bool secondPassed;
+
+extern volatile bool buttonPressed;
+
+
 
 
 enum UserEvent
@@ -60,7 +65,9 @@ static void getTimerString(char *timerString);
 
 static void toggleVibrate();
 
-static void toggleRinger();
+static void toggleBuzzer();
+
+static bool hasPendingWork();
 
 #endif /* __cplusplus */\
 

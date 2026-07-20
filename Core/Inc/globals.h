@@ -19,7 +19,6 @@ enum TimerStatus
 
 extern volatile int32_t g_counter;
 extern volatile bool g_checkTimer;
-extern volatile bool g_buttonPressed;
 
 
 

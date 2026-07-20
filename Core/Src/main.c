@@ -69,6 +69,10 @@ int main(void)
   /* USER CODE BEGIN 1 */
     int32_t g_counter = 0;
     bool g_checkTimer = false;
+
+   // Keeps SWD/JTAG clock active during Sleep Mode
+   HAL_DBGMCU_EnableDBGSleepMode();
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/

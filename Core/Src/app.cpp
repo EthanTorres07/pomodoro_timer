@@ -23,6 +23,9 @@
 extern "C"
 {
     volatile uint32_t _epochTime = 0;
+
+    volatile bool secondPassed = false;
+    volatile bool buttonPressed = false;
 }
 
 static uint32_t timerValue = 0;
@@ -44,6 +47,26 @@ void run()
     Oled oled(&hspi1);
 
     systemInit(rtc, oled);
+
+    // Main application loop
+    while (1)
+    {
+        UserEvent event = taskCheckInputs();
+
+        changeState(event);
+
+        taskUpdateTime(rtc);
+
+        taskUpdateDisplay(oled);
+
+        // Enter Sleep Mode
+        __disable_irq();
+        if (!hasPendingWork())
+        {
+            __WFI();
+        }
+        __enable_irq();
+    }
 }
 
 /**
@@ -104,9 +127,9 @@ void systemInit(RTCDriver& rtc, Oled& oled)
 static UserEvent taskCheckInputs()
 {
 
-    if (g_buttonPressed)
+    if (buttonPressed)
     {
-        g_buttonPressed = false;
+        buttonPressed = false;
         return BUTTON_PRESS;
     }
 
@@ -194,7 +217,10 @@ static void taskUpdateTime(RTCDriver& rtc)
 {
     if (systemState == TIMER_ACTIVE && timerValue - _epochTime == 0)
     {
+        // Change state and activate buzzer and vibration
         systemState = TIMER_FINISHED;
+        toggleVibrate();
+        toggleBuzzer();
     }
 
     // If its been an hour and there is no active timer sync the onboard time
@@ -348,4 +374,13 @@ static void toggleVibrate()
 static void toggleBuzzer()
 {
     HAL_GPIO_TogglePin(GPIOC, BZR_OUT_Pin);
+}
+
+/**
+ * @brief checks if any flags have been set by interrupts in order to sleep
+ * @retval whether there is pending work
+ */
+static bool hasPendingWork()
+{
+    return secondPassed || buttonPressed;
 }
