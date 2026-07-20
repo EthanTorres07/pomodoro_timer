@@ -58,6 +58,10 @@ static void getDateAndTimeString(const char *dateAndTime);
 
 static void getTimerString(char *timerString);
 
+static void toggleVibrate();
+
+static void toggleRinger();
+
 #endif /* __cplusplus */\
 
 #endif /* APP_H */

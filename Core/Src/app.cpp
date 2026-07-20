@@ -176,7 +176,8 @@ static void changeState(UserEvent event)
     case TIMER_FINISHED:
         if (event == BUTTON_PRESS)
         {
-            // Add vibration and ringer
+            toggleVibrate();
+            toggleBuzzer();
 
             // Go back to setup
             systemState = SETUP;
@@ -331,4 +332,20 @@ static void getTimerString(char *timerString)
     snprintf(timerString, sizeof(*timerString), "%02u:%02u:%02u", hours, minutes,
             seconds);
 
+}
+
+/**
+ * @brief toggles vibration motor
+ */
+static void toggleVibrate()
+{
+    HAL_GPIO_TogglePin(GPIOC, VIB_OUT_Pin);
+}
+
+/**
+ * @brief toggles buzzer
+ */
+static void toggleBuzzer()
+{
+    HAL_GPIO_TogglePin(GPIOC, BZR_OUT_Pin);
 }
