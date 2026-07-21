@@ -251,12 +251,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         if (currentTime - lastInterruptTime > 50)
         {
             // Pull-up: LOW = ON, HIGH = OFF
-            if (HAL_GPIO_ReadPin(PORTC, BZR_EN_Pin) == GPIO_PIN_RESET)
+            if (HAL_GPIO_ReadPin(BZR_EN_GPIO_Port, BZR_EN_Pin) ==
+                    GPIO_PIN_RESET)
             {
                 silentMode = 1; // Switch is Pressed / ON
             } else {
                 silentMode = 0; // Switch is Released / OFF
             }
+
+            lastInterruptTime = currentTime;
         }
     }
 
