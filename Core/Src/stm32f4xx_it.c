@@ -43,7 +43,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+volatile uint32_t lastInterruptTime = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -242,7 +242,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
     else if (GPIO_Pin == ENC_SW_Pin)
     {
-        buttonPressed = true;
+        buttonPressed = 1;
+    }
+    else if (GPIO_Pin == BZR_EN_Pin)
+    {
+        uint32_t currentTime = HAL_GetTick();
+
+        if (currentTime - lastInterruptTime > 50)
+        {
+            // Pull-up: LOW = ON, HIGH = OFF
+            if (HAL_GPIO_ReadPin(PORTC, BZR_EN_Pin) == GPIO_PIN_RESET)
+            {
+                silentMode = 1; // Switch is Pressed / ON
+            } else {
+                silentMode = 0; // Switch is Released / OFF
+            }
+        }
     }
 
 }

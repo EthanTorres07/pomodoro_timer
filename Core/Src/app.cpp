@@ -24,8 +24,10 @@ extern "C"
 {
     volatile uint32_t _epochTime = 0;
 
-    volatile bool secondPassed = false;
-    volatile bool buttonPressed = false;
+    volatile uint8_t secondPassed = 0;
+    volatile uint8_t buttonPressed = 0;
+    volatile uint8_t silentMode = 0;
+
 }
 
 static uint32_t timerValue = 0;
@@ -33,6 +35,8 @@ static uint32_t timerValue = 0;
 static State systemState = STARTUP;
 
 static uint32_t lastSyncTime;
+
+static bool ringerActive = false;
 
 
 /**
@@ -129,7 +133,7 @@ static UserEvent taskCheckInputs()
 
     if (buttonPressed)
     {
-        buttonPressed = false;
+        buttonPressed = 0;
         return BUTTON_PRESS;
     }
 
@@ -199,8 +203,11 @@ static void changeState(UserEvent event)
     case TIMER_FINISHED:
         if (event == BUTTON_PRESS)
         {
+            if (ringerActive || !silentMode)
+            {
             toggleVibrate();
             toggleBuzzer();
+            }
 
             // Go back to setup
             systemState = SETUP;
@@ -219,8 +226,11 @@ static void taskUpdateTime(RTCDriver& rtc)
     {
         // Change state and activate buzzer and vibration
         systemState = TIMER_FINISHED;
-        toggleVibrate();
-        toggleBuzzer();
+        if (!ringerActive || !silentMode)
+        {
+            toggleVibrate();
+            toggleBuzzer();
+        }
     }
 
     // If its been an hour and there is no active timer sync the onboard time
@@ -382,5 +392,7 @@ static void toggleBuzzer()
  */
 static bool hasPendingWork()
 {
-    return secondPassed || buttonPressed;
+    uint8_t temp = secondPassed;
+    secondPassed = 0;
+    return temp || buttonPressed;
 }

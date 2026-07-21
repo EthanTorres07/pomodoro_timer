@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BZR_EN_Pin GPIO_PIN_6
+#define BZR_EN_GPIO_Port GPIOC
 #define VIB_OUT_Pin GPIO_PIN_7
 #define VIB_OUT_GPIO_Port GPIOC
 #define BZR_OUT_Pin GPIO_PIN_8

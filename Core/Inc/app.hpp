@@ -15,10 +15,11 @@ extern "C" {
 
 extern volatile uint32_t _epochTime;
 
-extern volatile bool secondPassed;
+extern volatile uint8_t secondPassed;
 
-extern volatile bool buttonPressed;
+extern volatile uint8_t buttonPressed;
 
+extern volatile uint8_t silentMode;
 
 
 

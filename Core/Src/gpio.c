@@ -47,6 +47,12 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, VIB_OUT_Pin|BZR_OUT_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin : BZR_EN_Pin */
+  GPIO_InitStruct.Pin = BZR_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BZR_EN_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : VIB_OUT_Pin BZR_OUT_Pin */
   GPIO_InitStruct.Pin = VIB_OUT_Pin|BZR_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
