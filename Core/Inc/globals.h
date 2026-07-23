@@ -20,6 +20,10 @@ enum TimerStatus
 extern volatile int32_t g_counter;
 extern volatile bool g_checkTimer;
 
+extern char *g_dateAndTime;
+
+extern char g_timerString[9];
+
 
 
 

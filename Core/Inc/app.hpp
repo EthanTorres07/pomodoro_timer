@@ -60,9 +60,9 @@ static void taskUpdateTime(RTCDriver& rtc);
 
 static void taskUpdateDisplay(Oled& oled);
 
-static void getDateAndTimeString(const char *dateAndTime);
+static void setDateAndTimeString();
 
-static void getTimerString(char *timerString);
+static void setTimerString();
 
 static void toggleVibrate();
 

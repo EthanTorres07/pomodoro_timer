@@ -239,6 +239,10 @@ static void taskUpdateTime(RTCDriver& rtc)
     {
         syncEpochTime(rtc.getDateAndTime());
     }
+
+    // Updates date and time string and timer string
+    setDateAndTimeString();
+    setTimerString();
 }
 
 /**
@@ -279,29 +283,32 @@ static void taskUpdateDisplay(Oled& oled)
     case SETUP:
     case TIMER_ACTIVE:
     {
+        if (secondPassed)
+        {
         // Date and time centered in upper third
-        char dateAndTime[25];
-        getDateAndTimeString(dateAndTime);
-        x = (128 - (FONT_WIDTH * strlen(dateAndTime))) / 2;
+        x = (128 - (FONT_WIDTH * strlen(g_dateAndTime))) / 2;
         y = (64 - FONT_HEIGHT) / 3;
 
         // Timer in dead center
-        char timerString[9];
-        getTimerString(timerString);
-
-        x = (128 - (FONT_WIDTH * strlen(timerString))) / 2;
+        x = (128 - (FONT_WIDTH * strlen(g_timerString))) / 2;
         y = (64 - FONT_HEIGHT) / 2;
-        oled.drawString(timerString, x, y);
+        oled.drawString(g_timerString, x, y);
+
+        secondPassed = 0;
+        }
         break;
     }
 
     case TIMER_FINISHED:
     {
+        if (secondPassed)
+        {
         // Date and time centered in upper third
-        char dateAndTime[25];
-        getDateAndTimeString(dateAndTime);
-        x = (128 - (FONT_WIDTH * strlen(dateAndTime))) / 2;
+        x = (128 - (FONT_WIDTH * strlen(g_dateAndTime))) / 2;
         y = (64 - FONT_HEIGHT) / 3;
+
+        secondPassed = 0;
+        }
 
         // Message in dead center (blinking)
         char message[] = "TIMER FINISHED";
@@ -336,26 +343,24 @@ static void taskUpdateDisplay(Oled& oled)
 }
 
 /**
- * @brief Returns a string of the current date and time based on _epochTime
- * using ctime function acstime
- * @param dateAndTime buffer to put time in
- * @retval date and time in the form of Www Mmm dd hh:mm:ss yyyy\n
+ * @brief Sets g_dateAndTime with a string of the current date and time based on
+ * _epochTime using ctime function acstime
  */
-static void getDateAndTimeString(char *dateAndTime)
+static void setDateAndTimeString()
 {
     // Convert epoch to a structural representation of local time
     struct tm *timeinfo = localtime((const time_t*) _epochTime);
 
-    dateAndTime = asctime(timeinfo);
+    g_dateAndTime = asctime(timeinfo);
 
 }
 
 /**
- * @brief returns string containing live timer value
+ * @brief Sets g_timerString with string containing live timer value
  * @param timerString timer string buffer
  * @retval the formatted timer string in HH:MM:SS format
  */
-static void getTimerString(char *timerString)
+static void setTimerString()
 {
     // 1. Calculate time components
     uint32_t hours   = timerValue / 3600;
@@ -365,7 +370,7 @@ static void getTimerString(char *timerString)
     // 2. Format into an HH:MM:SS string
 
     // "%02u" forces 2 digits with leading zeros if needed
-    snprintf(timerString, sizeof(*timerString), "%02u:%02u:%02u", hours, minutes,
+    snprintf(g_timerString, sizeof(*g_timerString), "%02u:%02u:%02u", hours, minutes,
             seconds);
 
 }
@@ -392,7 +397,5 @@ static void toggleBuzzer()
  */
 static bool hasPendingWork()
 {
-    uint8_t temp = secondPassed;
-    secondPassed = 0;
-    return temp || buttonPressed;
+    return secondPassed || buttonPressed;
 }
